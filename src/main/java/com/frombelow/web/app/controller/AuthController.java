@@ -2,6 +2,7 @@ package com.frombelow.web.app.controller;
 
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.LoginRequest;
+import com.frombelow.web.app.payload.LoginResponse;
 import com.frombelow.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,11 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200",allowCredentials = "true")
 public class AuthController {
 
     @Autowired
@@ -29,9 +29,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginRequest loginRequest) {
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
+        System.out.println("request");
         try {
             Authentication authentication = authenticationManager.
                     authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -41,28 +42,41 @@ public class AuthController {
 
             ResponseCookie cookie = jwtUtil.generateJwtCookie(userDetails);
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userDetails.getAuthorities().toString());
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setStatus(true);
+            loginResponse.setMessage(userDetails.getAuthorities().toString());
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(loginResponse);
         } catch (BadCredentialsException e) {
             System.out.println("malas credenciales");
         } catch (Exception e) {
             System.out.println("Error");
             e.printStackTrace();
         }
-        return ResponseEntity.status(400).body("Some error has occurred");
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setStatus(false);
+        loginResponse.setMessage("mal");
+        return ResponseEntity.status(400).body(loginResponse);
 
     }
 
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtil.getCleanJwtCookie();
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setStatus(true);
+        loginResponse.setMessage("deslogueado");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("You've been signed out!");
+                .body(loginResponse);
 
     }
 
-    @PostMapping("/as")
-    public String sas(@RequestBody LoginRequest loginRequest) {
-        return "a";
+    @GetMapping("/admin")
+    public ResponseEntity<?> asas() {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setStatus(true);
+        loginResponse.setMessage("Esto solo es para admins");
+        return ResponseEntity.ok().body(loginResponse);
+
     }
 
 }

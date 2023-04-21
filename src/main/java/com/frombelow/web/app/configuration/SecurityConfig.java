@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/signUp","/authenticate")
                 .permitAll()
-                .antMatchers("/as")
+                .antMatchers("/admin")
                 .hasAuthority("admin")
                 .anyRequest()
                 .authenticated()
