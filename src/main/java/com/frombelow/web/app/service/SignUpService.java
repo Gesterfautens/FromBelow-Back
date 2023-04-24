@@ -1,8 +1,6 @@
 package com.frombelow.web.app.service;
 
-import com.frombelow.web.app.entity.Role;
 import com.frombelow.web.app.entity.User;
-import com.frombelow.web.app.repository.RoleRepository;
 import com.frombelow.web.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +15,7 @@ public class SignUpService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
+    
     public User singUp(User user) {
         if (existsByUsername(user.getUsername())) {
             return new User();

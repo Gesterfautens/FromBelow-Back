@@ -1,6 +1,7 @@
 package com.frombelow.web.app.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -63,4 +64,6 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+
 }

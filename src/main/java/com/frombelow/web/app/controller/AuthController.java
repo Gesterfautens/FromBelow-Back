@@ -1,5 +1,6 @@
 package com.frombelow.web.app.controller;
 
+import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.LoginRequest;
 import com.frombelow.web.app.payload.LoginResponse;
@@ -15,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200",allowCredentials = "true")
@@ -32,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
-        System.out.println("request");
+        LoginResponse loginResponse = new LoginResponse();
         try {
             Authentication authentication = authenticationManager.
                     authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -42,19 +45,19 @@ public class AuthController {
 
             ResponseCookie cookie = jwtUtil.generateJwtCookie(userDetails);
 
-            LoginResponse loginResponse = new LoginResponse();
             loginResponse.setStatus(true);
             loginResponse.setMessage(userDetails.getAuthorities().toString());
+
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(loginResponse);
+
         } catch (BadCredentialsException e) {
-            System.out.println("malas credenciales");
+            loginResponse.setStatus(false);
+            loginResponse.setMessage("Malas credenciales");
         } catch (Exception e) {
-            System.out.println("Error");
-            e.printStackTrace();
+            loginResponse.setStatus(false);
+            loginResponse.setMessage("error indefinido");
         }
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setStatus(false);
-        loginResponse.setMessage("mal");
+
         return ResponseEntity.status(400).body(loginResponse);
 
     }
@@ -70,13 +73,18 @@ public class AuthController {
 
     }
 
-    @GetMapping("/admin")
-    public ResponseEntity<?> asas() {
+    @GetMapping("/getRole")
+    public ResponseEntity<?> getRole(@CookieValue(value="jwtToken") String jwtToken) {
+        String role = userService.getUserRole(jwtUtil.getUserNameFromToken(jwtToken));
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setStatus(true);
-        loginResponse.setMessage("Esto solo es para admins");
+        loginResponse.setMessage(role);
         return ResponseEntity.ok().body(loginResponse);
+    }
 
+    @GetMapping("/check")
+    public List<String> check(@RequestParam int id){
+        return userService.getPartidasById(id);
     }
 
 }
