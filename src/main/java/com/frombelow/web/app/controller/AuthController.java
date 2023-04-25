@@ -1,5 +1,6 @@
 package com.frombelow.web.app.controller;
 
+import com.frombelow.web.app.entity.Liga;
 import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.LoginRequest;
@@ -82,9 +83,16 @@ public class AuthController {
         return ResponseEntity.ok().body(loginResponse);
     }
 
-    @GetMapping("/check")
-    public List<String> check(@RequestParam int id){
-        return userService.getPartidasById(id);
+    @GetMapping("/getPartidas")
+    public List<String> check(@CookieValue(value="jwtToken") String jwtToken, @RequestParam int liga){
+        String username = jwtUtil.getUserNameFromToken(jwtToken);
+        int id = userService.findByUsername(username).get().getId();
+        return userService.getPartidasByPlayerAndLiga(id,liga);
+    }
+
+    @GetMapping("/getLigas")
+    public List<Liga> getLigasActivas(){
+        return userService.getLigasActivas();
     }
 
 }

@@ -1,7 +1,9 @@
 package com.frombelow.web.app.service;
 
+import com.frombelow.web.app.entity.Liga;
 import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.entity.User;
+import com.frombelow.web.app.repository.LigaRepository;
 import com.frombelow.web.app.repository.PartidaRepository;
 import com.frombelow.web.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PartidaRepository partidaRepository;
 
+    @Autowired
+    private LigaRepository ligaRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optUser = userRepository.findByUsername(username);
@@ -40,9 +45,16 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public Optional<User> findByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 
-    public List<String> getPartidasById(int id){
-        return partidaRepository.getPartidasByPlayerId(id);
+    public List<String> getPartidasByPlayerAndLiga(int player_id, int liga_id){
+        return partidaRepository.getPartidasByPlayerIdaAndLigaId(player_id,liga_id);
+    }
+
+    public List<Liga> getLigasActivas(){
+        return ligaRepository.getAllActivas();
     }
 
     public String getUserRole(String username){

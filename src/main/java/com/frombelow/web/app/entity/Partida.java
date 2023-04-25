@@ -9,10 +9,13 @@ public class Partida {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int liga_id;
     private int result_player1;
     private int result_player2;
     private boolean jugada;
+
+    @ManyToOne
+    @JoinColumn(name="liga_id")
+    private Liga liga;
 
     @ManyToOne
     @JoinColumn(name="player1_id")
@@ -28,14 +31,6 @@ public class Partida {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getLiga_id() {
-        return liga_id;
-    }
-
-    public void setLiga_id(int liga_id) {
-        this.liga_id = liga_id;
     }
 
     public int getResult_player1() {
@@ -76,5 +71,13 @@ public class Partida {
 
     public void setJugada(boolean jugada) {
         this.jugada = jugada;
+    }
+
+    public Liga getLiga() {
+        return liga;
+    }
+
+    public void setLiga(Liga liga) {
+        this.liga = liga;
     }
 }

@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthJwtEntry)
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/signUp","/authenticate","/check")
+                .antMatchers("/signUp","/authenticate","/check","/getPartidas")
                 .permitAll()
                 .antMatchers("/admin")
                 .hasAuthority("admin")

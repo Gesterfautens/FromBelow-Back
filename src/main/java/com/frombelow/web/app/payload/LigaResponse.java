@@ -1,28 +1,13 @@
-package com.frombelow.web.app.entity;
+package com.frombelow.web.app.payload;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name="ligas")
-public class Liga {
+public class LigaResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private String edicion;
     private String formato;
     private Date fecha_ini;
     private Date fecha_fin;
-    private boolean activa;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getEdicion() {
         return edicion;
@@ -54,13 +39,5 @@ public class Liga {
 
     public void setFecha_fin(Date fecha_fin) {
         this.fecha_fin = fecha_fin;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
     }
 }
