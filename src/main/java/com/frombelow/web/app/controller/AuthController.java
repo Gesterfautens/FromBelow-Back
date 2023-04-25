@@ -5,6 +5,7 @@ import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.LoginRequest;
 import com.frombelow.web.app.payload.LoginResponse;
+import com.frombelow.web.app.payload.PartidaResponse;
 import com.frombelow.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -84,7 +85,7 @@ public class AuthController {
     }
 
     @GetMapping("/getPartidas")
-    public List<String> check(@CookieValue(value="jwtToken") String jwtToken, @RequestParam int liga){
+    public List<PartidaResponse> check(@CookieValue(value="jwtToken") String jwtToken, @RequestParam int liga){
         String username = jwtUtil.getUserNameFromToken(jwtToken);
         int id = userService.findByUsername(username).get().getId();
         return userService.getPartidasByPlayerAndLiga(id,liga);

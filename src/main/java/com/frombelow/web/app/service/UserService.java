@@ -3,6 +3,7 @@ package com.frombelow.web.app.service;
 import com.frombelow.web.app.entity.Liga;
 import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.entity.User;
+import com.frombelow.web.app.payload.PartidaResponse;
 import com.frombelow.web.app.repository.LigaRepository;
 import com.frombelow.web.app.repository.PartidaRepository;
 import com.frombelow.web.app.repository.UserRepository;
@@ -49,7 +50,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public List<String> getPartidasByPlayerAndLiga(int player_id, int liga_id){
+    public List<PartidaResponse> getPartidasByPlayerAndLiga(int player_id, int liga_id){
         return partidaRepository.getPartidasByPlayerIdaAndLigaId(player_id,liga_id);
     }
 
