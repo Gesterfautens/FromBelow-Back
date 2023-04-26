@@ -8,7 +8,7 @@ public class Partida {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private int result_player1;
     private int result_player2;
     private boolean jugada;
@@ -25,11 +25,11 @@ public class Partida {
     @JoinColumn(name="player2_id")
     private User player2;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

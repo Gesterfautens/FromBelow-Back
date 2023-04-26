@@ -1,11 +1,10 @@
 package com.frombelow.web.app.service;
 
-import com.frombelow.web.app.entity.Liga;
-import com.frombelow.web.app.entity.Partida;
-import com.frombelow.web.app.entity.User;
+import com.frombelow.web.app.entity.*;
 import com.frombelow.web.app.payload.PartidaResponse;
 import com.frombelow.web.app.repository.LigaRepository;
 import com.frombelow.web.app.repository.PartidaRepository;
+import com.frombelow.web.app.repository.UserLigaRepository;
 import com.frombelow.web.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +29,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private LigaRepository ligaRepository;
+
+    @Autowired
+    private UserLigaRepository userLigaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,12 +60,27 @@ public class UserService implements UserDetailsService {
         return ligaRepository.getAllActivas();
     }
 
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+    }
+
     public String getUserRole(String username){
         Optional<User> optUser = userRepository.findByUsername(username);
         if(!optUser.isEmpty()){
             return optUser.get().getRole().getTipo();
         }
-
         return "";
+    }
+
+    public boolean userToLiga(int userId, int ligaId){
+        UserLiga userLiga = new UserLiga();
+        userLiga.setId(new UserLigaId(userId,ligaId));
+
+        try{
+            userLiga = userLigaRepository.save(userLiga);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
     }
 }

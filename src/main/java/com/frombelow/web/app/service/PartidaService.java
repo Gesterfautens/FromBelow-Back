@@ -4,6 +4,7 @@ import com.frombelow.web.app.entity.Clasificacion;
 import com.frombelow.web.app.entity.Liga;
 import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.entity.User;
+import com.frombelow.web.app.payload.ClasificacionResponse;
 import com.frombelow.web.app.payload.LoginResponse;
 import com.frombelow.web.app.payload.PartidaRequest;
 import com.frombelow.web.app.repository.ClasificacionRepository;
@@ -111,12 +112,13 @@ public class PartidaService {
 
     }
 
-    public List<Clasificacion> getClasificacionesLiga(int ligaId) {
+    public List<ClasificacionResponse> getClasificacionesLiga(int ligaId) {
         return clasificacionRepository.findAllByLigaId(ligaId);
     }
 
 
     public void crearClasificaciones(int ligaId) {
+
         List<User> users = userRepository.findUsersByLigaId(ligaId);
         Liga liga = new Liga();
         liga.setId(ligaId);
@@ -142,7 +144,32 @@ public class PartidaService {
     }
 
     public void crearPartidas(int ligaId){
+
         List<User> users = userRepository.findUsersByLigaId(ligaId);
+        Liga liga = new Liga();
+        liga.setId(ligaId);
+
+        for (User jugador : users) {
+            List<Partida> partidas = new ArrayList<>();
+
+            for (User rival : users) {
+                if(jugador.getId() == rival.getId()){
+                    continue;
+                }
+
+                Partida partida = new Partida();
+                partida.setId(1);
+                partida.setResult_player1(0);
+                partida.setResult_player2(0);
+                partida.setJugada(false);
+                partida.setLiga(liga);
+                partida.setPlayer1(jugador);
+                partida.setPlayer2(rival);
+
+                partidas.add(partida);
+            }
+            partidaRepository.saveAll(partidas);
+        }
     }
 
 
