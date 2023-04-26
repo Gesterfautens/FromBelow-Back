@@ -13,4 +13,5 @@ public interface LigaRepository  extends JpaRepository<Liga,Integer> {
     @Query("select l from Liga l where l.activa = true")
     public List<Liga> getAllActivas();
 
+
 }

@@ -25,6 +25,17 @@ public class User {
     )
     private Role role;
 
+    @ManyToMany( cascade = CascadeType.REFRESH)
+    @JoinTable(name = "USER_LIGA",
+            joinColumns = {
+                    @JoinColumn(name = "USER_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "LIGA_ID")
+            }
+    )
+    private List<Liga> liga;
+
     public int getId() {
         return id;
     }
@@ -65,5 +76,11 @@ public class User {
         this.role = role;
     }
 
+    public List<Liga> getLiga() {
+        return liga;
+    }
 
+    public void setLiga(List<Liga> liga) {
+        this.liga = liga;
+    }
 }

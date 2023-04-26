@@ -2,6 +2,7 @@ package com.frombelow.web.app.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="ligas")
@@ -63,4 +64,5 @@ public class Liga {
     public void setActiva(boolean activa) {
         this.activa = activa;
     }
+
 }

@@ -1,11 +1,13 @@
 package com.frombelow.web.app.controller;
 
+import com.frombelow.web.app.entity.Clasificacion;
 import com.frombelow.web.app.entity.Liga;
-import com.frombelow.web.app.entity.Partida;
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.LoginRequest;
 import com.frombelow.web.app.payload.LoginResponse;
+import com.frombelow.web.app.payload.PartidaRequest;
 import com.frombelow.web.app.payload.PartidaResponse;
+import com.frombelow.web.app.service.PartidaService;
 import com.frombelow.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +36,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PartidaService partidaService;
+
+
 
     @PostMapping("/authenticate")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
@@ -47,16 +53,16 @@ public class AuthController {
 
             ResponseCookie cookie = jwtUtil.generateJwtCookie(userDetails);
 
-            loginResponse.setStatus(true);
+            loginResponse.setSuccess(true);
             loginResponse.setMessage(userDetails.getAuthorities().toString());
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(loginResponse);
 
         } catch (BadCredentialsException e) {
-            loginResponse.setStatus(false);
+            loginResponse.setSuccess(false);
             loginResponse.setMessage("Malas credenciales");
         } catch (Exception e) {
-            loginResponse.setStatus(false);
+            loginResponse.setSuccess(false);
             loginResponse.setMessage("error indefinido");
         }
 
@@ -68,7 +74,7 @@ public class AuthController {
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtil.getCleanJwtCookie();
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setStatus(true);
+        loginResponse.setSuccess(true);
         loginResponse.setMessage("deslogueado");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(loginResponse);
@@ -79,10 +85,13 @@ public class AuthController {
     public ResponseEntity<?> getRole(@CookieValue(value="jwtToken") String jwtToken) {
         String role = userService.getUserRole(jwtUtil.getUserNameFromToken(jwtToken));
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setStatus(true);
+        loginResponse.setSuccess(true);
         loginResponse.setMessage(role);
         return ResponseEntity.ok().body(loginResponse);
     }
+
+
+    // TODO: Esto hay que cambiarlo a otrso servicios
 
     @GetMapping("/getPartidas")
     public List<PartidaResponse> check(@CookieValue(value="jwtToken") String jwtToken, @RequestParam int liga){
@@ -94,6 +103,26 @@ public class AuthController {
     @GetMapping("/getLigas")
     public List<Liga> getLigasActivas(){
         return userService.getLigasActivas();
+    }
+
+
+    @PostMapping("/actualizaPartida")
+    public LoginResponse actualizaPartida(@RequestBody PartidaRequest partidaRequest){
+        partidaService.actualizaPartida(partidaRequest);
+        return new LoginResponse();
+    }
+
+    @GetMapping("/getClasificacion")
+    public List<Clasificacion> getClasificacion(@RequestParam int liga){
+       return partidaService.getClasificacionesLiga(liga);
+    }
+
+    /* Ejecutar solo una vez cuando esten todos los usuarios apuntados a la liga
+    * TODO Comprobar permisos de administrador
+    */
+    @GetMapping("/crearClasificacion")
+    public void crear(@RequestParam int liga){
+         partidaService.crearClasificaciones(liga);
     }
 
 }

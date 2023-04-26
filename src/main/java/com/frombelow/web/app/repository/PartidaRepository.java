@@ -19,4 +19,9 @@ public interface PartidaRepository extends JpaRepository<Partida,Integer> {
             "WHERE p.player1.id=:player_id AND p.liga.id=:liga_id")
     public List<PartidaResponse> getPartidasByPlayerIdaAndLigaId(int player_id, int liga_id);
 
+
+    @Query(value="SELECT p FROM Partida p" +
+            " WHERE p.player1.id=:player2Id AND p.player2.id=:player1Id AND p.liga.id =:ligaId")
+    public Partida getPartidaContraria(int ligaId,int player1Id,int player2Id);
+
 }
