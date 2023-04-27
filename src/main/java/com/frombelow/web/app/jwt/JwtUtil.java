@@ -37,7 +37,7 @@ public class JwtUtil {
     public ResponseCookie generateJwtCookie(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         String jwt = createToken(claims, userDetails);
-        ResponseCookie cookie = ResponseCookie.from(COOKIE_NAME, jwt).maxAge(24 * 60 * 60).build();
+        ResponseCookie cookie = ResponseCookie.from(COOKIE_NAME, jwt).maxAge((24*30) * 60 * 60).build();
         return cookie;
     }
 
@@ -46,7 +46,7 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .claim("authorities", userDetails.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis((24*30))))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 

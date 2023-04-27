@@ -118,40 +118,5 @@ public class AuthController {
        return partidaService.getClasificacionesLiga(liga);
     }
 
-    //TODO admins panel
-    // Ejecutar solo una vez cuando esten todos los usuarios apuntados a la liga
-    @PostMapping("/crearClasificacion")
-    public void crear(@RequestBody LigaRequest ligaRequest){
-            partidaService.crearClasificaciones(ligaRequest.getLigaId());
-    }
-
-    // Ejecutar solo una vez cuando esten todos los usuarios apuntados a la liga
-    @PostMapping("/crearPartidas")
-    public void crearPartida(@RequestBody LigaRequest ligaRequest){
-            partidaService.crearPartidas(ligaRequest.getLigaId());
-    }
-
-    @PostMapping("/getUsers")
-    public List<User> crearPartida(@CookieValue(value="jwtToken") String jwtToken){
-            return userService.getAllUsers();
-    }
-
-
-    @PostMapping("/userToLiga")
-    public LoginResponse addUserToLiga(@CookieValue(value="jwtToken") String jwtToken, @RequestBody UserLigaRequest userLigaRequest){
-        String username = jwtUtil.getUserNameFromToken(jwtToken);
-        Role role = userService.findByUsername(username).get().getRole();
-
-        if(role.getTipo() == "admin")
-            return new LoginResponse(false,"no tienes permisos");
-
-        if(!userService.userToLiga(userLigaRequest.getUserId(),userLigaRequest.getLigaId()))
-            return new LoginResponse(false,"error al añadir");
-
-        return new LoginResponse(true,"Añadido");
-    }
-
-
-
 
 }

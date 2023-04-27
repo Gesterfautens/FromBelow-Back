@@ -117,7 +117,7 @@ public class PartidaService {
     }
 
 
-    public void crearClasificaciones(int ligaId) {
+    public LoginResponse crearClasificaciones(int ligaId) {
 
         List<User> users = userRepository.findUsersByLigaId(ligaId);
         Liga liga = new Liga();
@@ -140,10 +140,16 @@ public class PartidaService {
             );
             clasificaciones.add(clasificacion);
         }
-        clasificacionRepository.saveAll(clasificaciones);
+        try {
+            clasificacionRepository.saveAll(clasificaciones);
+            return new LoginResponse(true, "");
+        } catch (Exception e) {
+            return new LoginResponse();
+        }
+
     }
 
-    public void crearPartidas(int ligaId){
+    public LoginResponse crearPartidas(int ligaId) {
 
         List<User> users = userRepository.findUsersByLigaId(ligaId);
         Liga liga = new Liga();
@@ -153,7 +159,7 @@ public class PartidaService {
             List<Partida> partidas = new ArrayList<>();
 
             for (User rival : users) {
-                if(jugador.getId() == rival.getId()){
+                if (jugador.getId() == rival.getId()) {
                     continue;
                 }
 
@@ -168,8 +174,13 @@ public class PartidaService {
 
                 partidas.add(partida);
             }
-            partidaRepository.saveAll(partidas);
+            try {
+                partidaRepository.saveAll(partidas);
+            } catch (Exception e) {
+                return new LoginResponse();
+            }
         }
+        return new LoginResponse(true, "");
     }
 
 

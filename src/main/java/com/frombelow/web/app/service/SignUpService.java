@@ -1,7 +1,10 @@
 package com.frombelow.web.app.service;
 
 import com.frombelow.web.app.entity.User;
+import com.frombelow.web.app.payload.LoginRequest;
+import com.frombelow.web.app.payload.LoginResponse;
 import com.frombelow.web.app.repository.UserRepository;
+import org.aspectj.weaver.patterns.ExactTypePattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,17 @@ public class SignUpService {
 
         user.setPass(passwordEncoder.encode(user.getPass()));
         return userRepository.save(user);
+    }
+
+    public LoginResponse cambiarPass(LoginRequest loginRequest){
+        try{
+            User user = userRepository.findByUsername(loginRequest.getUsername()).get();
+            user.setPass(passwordEncoder.encode(loginRequest.getPassword()));
+            userRepository.save(user);
+            return new LoginResponse(true,"");
+        }catch (Exception e){
+            return new LoginResponse();
+        }
     }
 
     public User loadByUsername(String username) {
