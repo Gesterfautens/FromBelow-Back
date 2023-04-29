@@ -67,7 +67,7 @@ public class AuthController {
             loginResponse.setMessage("error indefinido");
         }
 
-        return ResponseEntity.status(400).body(loginResponse);
+        return ResponseEntity.ok().body(loginResponse);
 
     }
 
@@ -89,33 +89,6 @@ public class AuthController {
         loginResponse.setSuccess(true);
         loginResponse.setMessage(role);
         return ResponseEntity.ok().body(loginResponse);
-    }
-
-
-    // TODO: Esto hay que cambiarlo a otrso controllers
-
-    @GetMapping("/getPartidas")
-    public List<PartidaResponse> getPartidas(@CookieValue(value="jwtToken") String jwtToken, @RequestParam int liga){
-        String username = jwtUtil.getUserNameFromToken(jwtToken);
-        int id = userService.findByUsername(username).get().getId();
-        return userService.getPartidasByPlayerAndLiga(id,liga);
-    }
-
-    @GetMapping("/getLigas")
-    public List<Liga> getLigasActivas(){
-        return userService.getLigasActivas();
-    }
-
-
-    @PostMapping("/actualizaPartida")
-    public LoginResponse actualizaPartida(@RequestBody PartidaRequest partidaRequest){
-        partidaService.actualizaPartida(partidaRequest);
-        return new LoginResponse();
-    }
-
-    @GetMapping("/getClasificacion")
-    public List<ClasificacionResponse> getClasificacion(@RequestParam int liga){
-       return partidaService.getClasificacionesLiga(liga);
     }
 
 

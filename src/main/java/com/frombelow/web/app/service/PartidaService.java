@@ -7,11 +7,13 @@ import com.frombelow.web.app.entity.User;
 import com.frombelow.web.app.payload.ClasificacionResponse;
 import com.frombelow.web.app.payload.LoginResponse;
 import com.frombelow.web.app.payload.PartidaRequest;
+import com.frombelow.web.app.payload.PartidaResponse;
 import com.frombelow.web.app.repository.ClasificacionRepository;
 import com.frombelow.web.app.repository.PartidaRepository;
 import com.frombelow.web.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class PartidaService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     public LoginResponse actualizaPartida(PartidaRequest partida) {
         int partidaId = partida.getPartida_id();
         int player1Id = partida.getPlayer1_id();
@@ -51,9 +54,13 @@ public class PartidaService {
         partidaContraria.setResult_player2(resultPayer1);
         partidaContraria.setJugada(true);
 
-        //guardamos el resultado de las partidas
-        partidaRepository.save(partidaNormal);
-        partidaRepository.save(partidaContraria);
+        try{
+            //guardamos el resultado de las partidas
+            partidaRepository.save(partidaNormal);
+            partidaRepository.save(partidaContraria);
+        }catch(Exception e){
+            return new LoginResponse(false,"error guardando las partidas");
+        }
 
         //actualizamos la informacion de las clasificaciones de los participantes de la partida
         Clasificacion clasiPl1 = clasificacionRepository.findClasificacionByJugadorIdAndLigaId(player1Id, ligaId);
@@ -104,9 +111,12 @@ public class PartidaService {
 
         clasiPl2.setWinrate(winrateDos);
 
-
-        clasificacionRepository.save(clasiPl1);
-        clasificacionRepository.save(clasiPl2);
+        try{
+            clasificacionRepository.save(clasiPl1);
+            clasificacionRepository.save(clasiPl2);
+        }catch(Exception e){
+            return new LoginResponse(false,"error guardadno la clasificacion");
+        }
 
         return new LoginResponse(true, "bieng");
 
@@ -116,6 +126,9 @@ public class PartidaService {
         return clasificacionRepository.findAllByLigaId(ligaId);
     }
 
+    public List<PartidaResponse> getPartidasByPlayerAndLiga(int player_id, int liga_id){
+        return partidaRepository.getPartidasByPlayerIdaAndLigaId(player_id,liga_id);
+    }
 
     public LoginResponse crearClasificaciones(int ligaId) {
 
@@ -125,6 +138,9 @@ public class PartidaService {
 
         List<Clasificacion> clasificaciones = new ArrayList<>();
         for (User user : users) {
+
+            if(user.getRole().getTipo().equals("admin"))
+                continue;
 
             Clasificacion clasificacion = new Clasificacion(
                     1,
@@ -159,7 +175,7 @@ public class PartidaService {
             List<Partida> partidas = new ArrayList<>();
 
             for (User rival : users) {
-                if (jugador.getId() == rival.getId()) {
+                if (jugador.getRole().getTipo().equals( "admin") || jugador.getId() == rival.getId() || rival.getRole().getTipo() == "admin") {
                     continue;
                 }
 
@@ -177,7 +193,7 @@ public class PartidaService {
             try {
                 partidaRepository.saveAll(partidas);
             } catch (Exception e) {
-                return new LoginResponse();
+                return new LoginResponse(false,"");
             }
         }
         return new LoginResponse(true, "");

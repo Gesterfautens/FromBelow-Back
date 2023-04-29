@@ -48,16 +48,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public List<Liga> getLigasofUser(String username){
+        return userRepository.findLigasByUsername(username);
+    }
+
     public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
-    }
-
-    public List<PartidaResponse> getPartidasByPlayerAndLiga(int player_id, int liga_id){
-        return partidaRepository.getPartidasByPlayerIdaAndLigaId(player_id,liga_id);
-    }
-
-    public List<Liga> getLigasActivas(){
-        return ligaRepository.getAllActivas();
     }
 
     public List<User> getAllUsers(){

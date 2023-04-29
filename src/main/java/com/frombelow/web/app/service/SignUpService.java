@@ -19,13 +19,18 @@ public class SignUpService {
     private PasswordEncoder passwordEncoder;
 
     
-    public User singUp(User user) {
+    public LoginResponse singUp(User user) {
         if (existsByUsername(user.getUsername())) {
-            return new User();
+            return new LoginResponse(false,"El usuario ya existe");
         }
 
         user.setPass(passwordEncoder.encode(user.getPass()));
-        return userRepository.save(user);
+        try {
+            userRepository.save(user);
+        }catch (Exception e){
+            return new LoginResponse(false,"error creando el usuario");
+        }
+        return new LoginResponse(true,"creado con exito");
     }
 
     public LoginResponse cambiarPass(LoginRequest loginRequest){
@@ -33,9 +38,9 @@ public class SignUpService {
             User user = userRepository.findByUsername(loginRequest.getUsername()).get();
             user.setPass(passwordEncoder.encode(loginRequest.getPassword()));
             userRepository.save(user);
-            return new LoginResponse(true,"");
+            return new LoginResponse(true,"Contraseña cambiada");
         }catch (Exception e){
-            return new LoginResponse();
+            return new LoginResponse(false,"error");
         }
     }
 

@@ -52,9 +52,12 @@ public class AdminController {
     @PostMapping("/userToLiga")
     public LoginResponse addUserToLiga(@CookieValue(value="jwtToken") String jwtToken, @RequestBody UserLigaRequest userLigaRequest){
 
-        userService.userToLiga(userLigaRequest.getUserId(),userLigaRequest.getLigaId());
+       if(userService.userToLiga(userLigaRequest.getUserId(),userLigaRequest.getLigaId())){
+           return new LoginResponse(true,"Añadido");
+       }else{
+           return new LoginResponse(false,"error");
+       }
 
-        return new LoginResponse(true,"Añadido");
     }
 
 
