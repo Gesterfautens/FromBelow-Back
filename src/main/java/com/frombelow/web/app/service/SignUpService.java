@@ -51,4 +51,15 @@ public class SignUpService {
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    public LoginResponse cambiarPassUser(String username,String pass){
+        try{
+            User user = userRepository.findByUsername(username).get();
+            user.setPass(passwordEncoder.encode(pass));
+            userRepository.save(user);
+            return new LoginResponse(true,"Contraseña cambiada");
+        }catch (Exception e){
+            return new LoginResponse(false,"error");
+        }
+    }
 }

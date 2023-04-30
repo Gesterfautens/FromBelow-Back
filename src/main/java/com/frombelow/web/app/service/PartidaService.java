@@ -158,7 +158,7 @@ public class PartidaService {
         }
         try {
             clasificacionRepository.saveAll(clasificaciones);
-            return new LoginResponse(true, "");
+            return new LoginResponse(true, " clasificacion creada con exito");
         } catch (Exception e) {
             return new LoginResponse();
         }
@@ -196,7 +196,7 @@ public class PartidaService {
                 return new LoginResponse(false,"");
             }
         }
-        return new LoginResponse(true, "");
+        return new LoginResponse(true, "partidas creadas con exito  ");
     }
 
 

@@ -62,7 +62,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/authenticate")
                 .permitAll()
-                .antMatchers("/admin","/crearClasificacion","/getUsers","/crearPartidas","/userToLiga","/signUp")
+                .antMatchers("/admin","/crearClasificacion","/getUsers","/crearLiga","cambiarPass",
+                        "/crearPartidas","/userToLiga","/signUp")
                 .hasAuthority("admin")
                 .anyRequest()
                 .authenticated()

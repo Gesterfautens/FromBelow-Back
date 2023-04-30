@@ -1,12 +1,8 @@
 package com.frombelow.web.app.controller;
 
-import com.frombelow.web.app.entity.Clasificacion;
-import com.frombelow.web.app.entity.Liga;
-import com.frombelow.web.app.entity.Role;
-import com.frombelow.web.app.entity.User;
+
 import com.frombelow.web.app.jwt.JwtUtil;
 import com.frombelow.web.app.payload.*;
-import com.frombelow.web.app.service.PartidaService;
 import com.frombelow.web.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,9 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200",allowCredentials = "true")
@@ -36,9 +29,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private PartidaService partidaService;
 
 
 
